@@ -18,4 +18,8 @@ public class DrawUtil {
         );
     }
 
+    public static void drawLine(Mat output, Point point1, Point point2, Scalar color) {
+        Imgproc.line(output, point1, point2, color, 2);
+    }
+
 }
