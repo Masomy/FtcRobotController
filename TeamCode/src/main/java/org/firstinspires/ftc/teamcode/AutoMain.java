@@ -18,7 +18,11 @@ public abstract class AutoMain extends LinearOpMode {
         RED_DUCK,
         RED_WAREHOUSE,
         BLUE_DUCK,
-        BLUE_WAREHOUSE
+        BLUE_WAREHOUSE;
+
+        public boolean isBlue() {
+            return this == BLUE_DUCK || this == BLUE_WAREHOUSE;
+        }
     }
 
     @Override
@@ -60,6 +64,11 @@ public abstract class AutoMain extends LinearOpMode {
 
         Point first = new Point(135, 100);
         Point second = new Point(410, 100);
+
+        if (getStartPosition().isBlue()) {
+            first.x += 50;
+            second.x += 50;
+        }
 
         if (getStartPosition() == StartPosition.RED_DUCK) {
             robot.getBarCodePositionDetector().setBarCodePositions(
