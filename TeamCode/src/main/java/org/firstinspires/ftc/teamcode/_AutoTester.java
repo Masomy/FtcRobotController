@@ -15,6 +15,8 @@ public class _AutoTester extends LinearOpMode {
     protected double fieldSide;
     protected BarCodePositionDetector.BarCodePosition barCodePosition;
 
+    boolean red = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -52,10 +54,17 @@ public class _AutoTester extends LinearOpMode {
     }
 
     private void initBarCodePositions() {
-        Point first = new Point(135, 100);
-        Point second = new Point(410, 100);
+        if (red) {
+            Point first = new Point(135, 100);
+            Point second = new Point(410, 100);
 
-        robot.getBarCodePositionDetector().setBarCodePositions(first, second, null, BarCodePosition.RIGHT);
+            robot.getBarCodePositionDetector().setBarCodePositions(first, second, null, BarCodePosition.RIGHT);
+        } else {
+            Point first = new Point(135 + 50, 100);
+            Point second = new Point(410 + 50, 100);
+
+            robot.getBarCodePositionDetector().setBarCodePositions(null, first, second, BarCodePosition.LEFT);
+        }
     }
 
     protected Arm.Position getArmPositionForBarCode(BarCodePosition barCodePosition) {
