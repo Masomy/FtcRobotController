@@ -17,6 +17,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BarCodePositionDetector extends BaseComponent {
@@ -151,6 +152,16 @@ public class BarCodePositionDetector extends BaseComponent {
                 // Add the bounding rectangle for the detector
                 Imgproc.rectangle(output, detector.getDetectionBounds(), color, 3);
 
+                //add the actual detections
+                for (List<Point> points : detector.getDetectedPoints()) {
+                    for (int i = 0; i < points.size(); i++) {
+                        Point pt1 = points.get(i);
+                        Point pt2 = points.get((i + 1) % points.size());
+                        DrawUtil.drawLine(output, pt1, pt2, Color.BLUE.toRGBA());
+                    }
+                }
+                telemetry.addData("Detected Data " + entry.getKey(), detector.getDetectedData());
+                telemetry.update();
             }
         }
     }
