@@ -16,9 +16,9 @@ public class Arm extends BaseComponent {
     public enum Position {
 
         INTAKE(0),
-        LOW(1850),
-        MEDIUM(1650),
-        HIGH(1400),
+        LOW(1875),//original 1850
+        MEDIUM(1675),//original 1650
+        HIGH(1400),//original 1400
         //the height the arm should be at while traveling
         TRAVEL(125),
         TEST(600);
