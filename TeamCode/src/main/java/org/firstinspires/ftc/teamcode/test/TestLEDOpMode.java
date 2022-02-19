@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import androidx.annotation.ColorInt;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.teamcode.QwiicLEDStrip;
 //yellow to green
 
 @TeleOp()
-@Disabled
 public class TestLEDOpMode extends OpMode {
     private QwiicLEDStrip ledStrip;
     private ElapsedTime elapsedTime = new ElapsedTime();
