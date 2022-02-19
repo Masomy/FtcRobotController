@@ -44,7 +44,10 @@ public abstract class AutoMain extends LinearOpMode {
         //turn off LEDs
         robot.getLedStrip().stopLedStrip();
 
-        if(robot.getRearWebCam().getStreamOutput())
+        //close the door just in case
+        robot.getIntake().getDoor().closeDoor();
+
+        if (robot.getRearWebCam().getStreamOutput())
             robot.waitForStop();
 
     }
