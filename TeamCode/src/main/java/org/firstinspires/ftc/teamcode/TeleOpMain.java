@@ -16,6 +16,7 @@ import java.util.List;
 public class TeleOpMain extends OpMode {
 
     private static final double DEADZONE = 0.07;
+    private static final double INTAKE_DEADZONE = 0.05;
 
     private Robot robot;
 
@@ -129,18 +130,9 @@ public class TeleOpMain extends OpMode {
             intakeWheel.setPower(0);
         }
 
-        if(gamepad1.left_trigger < DEADZONE) {
+        if (gamepad1.left_trigger < INTAKE_DEADZONE) {
             intaken = false;
         }
-
-
-        /*if(gamepad1.left_trigger != 0 && !flag1) {
-            intakeWheel.setPower(.5);
-            beamBreakTime.reset();
-        }else if() {
-
-        }*/
-
 
         //door
         if (gamepad1.right_bumper && doorTime.milliseconds() > 1500) {
@@ -206,5 +198,6 @@ public class TeleOpMain extends OpMode {
         }
         telemetry.addData("Have intaked",intaken);
         telemetry.update();
+
     }
 }
