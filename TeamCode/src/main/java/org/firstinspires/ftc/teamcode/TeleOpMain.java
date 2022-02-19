@@ -39,11 +39,16 @@ public class TeleOpMain extends OpMode {
     //private ElapsedTime intakeTime;
     private ElapsedTime beamBreakTime;
     private ElapsedTime beamBreakDelay;
+    private ElapsedTime delayBeforeStoppingWheels;
 
     private boolean intaken;
     private double capperPosition;
 
     private DigitalChannel beamBreak;
+
+    private int intakeState;
+
+    private String stringRepOfState;
 
     @Override
     public void init() {
@@ -72,6 +77,7 @@ public class TeleOpMain extends OpMode {
         //intakeTime = new ElapsedTime();
         beamBreakTime = new ElapsedTime();
         beamBreakDelay = new ElapsedTime();
+        delayBeforeStoppingWheels = new ElapsedTime();
 
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -83,6 +89,8 @@ public class TeleOpMain extends OpMode {
 
         beamBreak = hardwareMap.digitalChannel.get("beamBreak");
         robot.getLedStrip().stopLedStrip();
+
+        intakeState = 0;
     }
 
     @Override
@@ -121,6 +129,7 @@ public class TeleOpMain extends OpMode {
         }
 
         //intake
+        /*
         if (gamepad1.left_trigger != 0 && !intaken) {
             intakeWheel.setPower(0.5);
             beamBreakTime.reset();
@@ -133,7 +142,7 @@ public class TeleOpMain extends OpMode {
         if (gamepad1.left_trigger < INTAKE_DEADZONE) {
             intaken = false;
         }
-
+*/
         //door
         if (gamepad1.right_bumper && doorTime.milliseconds() > 1500) {
             if (robot.getIntake().getDoor().getPosition().equals(Door.Position.CLOSED)) {
@@ -141,7 +150,7 @@ public class TeleOpMain extends OpMode {
                         robot.getArm().getPosition() == Arm.Position.MEDIUM ||
                         robot.getArm().getPosition() == Arm.Position.HIGH) {
                     robot.getIntake().getDoor().openDoor();
-                    intaken = false;
+                    //intaken = false;
                     telemetry.addLine("Door is open");
                 }
             } else {
@@ -186,6 +195,7 @@ public class TeleOpMain extends OpMode {
         }
 
         //beam break
+        /*
         if(!intaken && beamBreakTime.milliseconds() < 1000 && beamBreakDelay.milliseconds() > 200) {
             if(!beamBreak.getState()) {
                 //intakeTime.reset();
@@ -196,7 +206,49 @@ public class TeleOpMain extends OpMode {
         }else if(!intaken) {
             robot.getLedStrip().stopLedStrip();
         }
-        telemetry.addData("Have intaked",intaken);
+        */
+        //telemetry.addData("Have intaked",intaken);
+
+
+        switch (intakeState) {
+            case 0: //init state
+                stringRepOfState = "Init";
+                robot.getLedStrip().stopLedStrip();
+                intakeWheel.setPower(0);
+                if (gamepad1.left_trigger != 0) {
+                    intakeState = 1;
+                    intakeWheel.setPower(.5);
+                }
+                break;
+            case 1: //Wait for beam break
+                stringRepOfState = "Wait for beam break";
+                if (gamepad1.left_trigger <= INTAKE_DEADZONE) {
+                    intakeState = 0;
+                } else if (!beamBreak.getState()) {
+                    delayBeforeStoppingWheels.reset();
+                    intakeState = 2;
+                }
+                break;
+            case 2: //handle beam break
+                stringRepOfState = "Beam break detected";
+                robot.getLedStrip().activateLed("Green", 3);
+                if (delayBeforeStoppingWheels.milliseconds() > 0) {
+                    intakeWheel.setPower(0);
+                    intakeState = 3;
+                } else if (gamepad1.left_trigger <= INTAKE_DEADZONE) {
+                    intakeState = 0;
+                }
+                break;
+            case 3:
+                if (gamepad1.left_trigger <= INTAKE_DEADZONE) {
+                    intakeState = 0;
+                }
+                break;
+            default:
+                throw new RuntimeException("Case Default found");
+        }
+
+        telemetry.addData("Intake State", stringRepOfState);
         telemetry.update();
 
     }
